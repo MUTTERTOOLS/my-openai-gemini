@@ -18,19 +18,25 @@ export default {
         }
       };
       const { pathname } = new URL(request.url);
+
+      const start = Date.now()
+      const timeSpend = () =>{
+        const end = Date.now();
+        console.log('time spend: ', end - start)
+      }
       switch (true) {
         case pathname.endsWith("/chat/completions"):
           assert(request.method === "POST");
           return handleCompletions(await request.json(), apiKey)
-            .catch(errHandler);
+            .catch(errHandler).finally(timeSpend);
         case pathname.endsWith("/embeddings"):
           assert(request.method === "POST");
           return handleEmbeddings(await request.json(), apiKey)
-            .catch(errHandler);
+            .catch(errHandler).finally(timeSpend);
         case pathname.endsWith("/models"):
           assert(request.method === "GET");
           return handleModels(apiKey)
-            .catch(errHandler);
+            .catch(errHandler).finally(timeSpend);
         default:
           throw new HttpError("404 Not Found", 404);
       }
