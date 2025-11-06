@@ -1,4 +1,11 @@
 import { Buffer } from "node:buffer";
+import https from 'node:https'
+
+const agent = new https.Agent({
+  keepAlive: true,
+  timeout: 60000,
+  maxSockets: 10,
+});
 
 export default {
   async fetch (request) {
@@ -193,6 +200,7 @@ async function handleCompletions (req, apiKey) {
     method: "POST",
     headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
     body: JSON.stringify(body),
+    dispatcher: agent
   });
   const end = Date.now()
   console.log('fetch time spend: ', end - start)
